@@ -15,35 +15,37 @@
     }
 
     .img-row {
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
-  </style>
-</head>
-<body>
-  <div class="img-preview">
 
-  </div>
+    </style>
+    </head>
+    <body>
+    <div class="img-preview">
+
+      </div>
 
 
-  <script src="jquery-3.2.1.min.js"></script>
+      <script src="jquery-3.2.1.min.js"></script>
   <script>
     function Barrel($ct){
       this.$ct = $ct
+      this.baseHeight = 180
       this.rowList = []
       this.loadImg()
     }
 
     Barrel.prototype = {
-      loadImg: function() {
+      loadImg: function () {
         var _this = this
-        var imgUrls = this.getImgUrls(50);
-        $.each(imgUrls,function(idx, url){
+        var imgUrls = this.getImgUrls(30);
+        $.each(imgUrls, function (idx, url) {
           var img = new Image()
           img.src = url
-          img.onload = function(){
+          img.onload = function () {
             var imgInfo = {
               target: $(img),
-              width: _this.baseHeight * (img.width/img.height),
+              width: _this.baseHeight * (img.width / img.height),
               height: _this.baseHeight
             }
             _this.render(imgInfo)
@@ -52,47 +54,76 @@
       },
       getImgUrls: function (num) {
         var color, width, height, urls = []
-        for(var i=0; i<num; i++) {
-          color = Math.random().toString(16).substring(2,8)
+        for (var i = 0; i < num; i++) {
+          color = Math.random().toString(16).substring(2, 8)
           width = Math.floor(Math.random() * 100 + 50)
           height = Math.floor(Math.random() * 30 + 50)
-          urls.push("http://placehold.it/" + width + "x" + height + "/" + color + "/fff")
+          urls.push("https://placehold.it/" + width + "x" + height + "/" + color + "/fff")
         }
         return urls
       },
-      render: function (imgInfo) {
+      /*render: function (imgInfo) {
         var clientWidth = this.$ct.width(),
-            rowWidth = 0,
-            newRowHeight = 0,
-            lastImgInfo = imgInfo
+          _this = this,
+          rowWidth = 0,
+          rowHeight = 0,
+          rowList = this.rowList,
+          lastImgInfo = imgInfo
 
-        this.rowList.push(imgInfo)
-        for(var i=0; i<this.rowList.length; i++){
-          rowWidth += this.rowList[i].width
+        rowList.push(imgInfo)
+        console.log(rowList.length)
+        for(var i = 0; i < rowList.length; i++) {
+          rowWidth += imgInfo.width
+          if (rowWidth > clientWidth) {
+            rowList.pop()
+            rowWidth -= lastImgInfo.width
+            rowHeight = clientWidth * _this.baseHeight / rowWidth
+
+            _this.layout(rowHeight)
+            _this.rowList = []
+            _this.rowList.push(lastImgInfo)
+          }
         }
-        if(rowWidth > clientWidth){
-          this.rowList.pop()
-          newRowHeight = clientWidth * 250/rowWidth
-          this.layout()
-          this.rowList = []
-          this.rowList.push(imgInfo)
-        }
+      },*/
+      render: function(imgInfo){
+        var _this = this;
+        var rowList = this.rowList,
+          rowWidth = 0,
+          rowHeight = 0,
+          clientWidth = this.$ct.width(),
+          lastImgInfo = imgInfo;
+
+        rowList.push(imgInfo);
+
+        $.each(rowList,function(idx, imgInfo){
+          rowWidth += imgInfo.width;
+          if(rowWidth  > clientWidth ){
+            rowList.pop();
+            rowWidth -= lastImgInfo.width;
+            rowHeight = clientWidth * _this.baseHeight / rowWidth;
+
+            _this.layout(rowHeight);
+            _this.rowList = [];
+            _this.rowList.push(lastImgInfo);
+          }
+        });
       },
-      layout: function () {
+
+      layout: function (rowHeight) {
         var $rowCt = $('<div class="img-row"></div>')
-        $.each(this.rowList, function (idx,imgInfo) {
-          var $imgCt = $('<div class="img-box"></div>'),
-              $img = $(imgInfo.target)
+        $.each(this.rowList, function (idx, imgInfo) {
+          var $img = $(imgInfo.target)
+
           $img.height(rowHeight)
-          $imgCt.append($img)
-          $rowCt.append($imgCt)
+          $rowCt.append($img)
         })
         this.$ct.append($rowCt)
       }
     }
 
 
-    var barrrr = new Barrel($('.img-preview'))
+
+    var barrr = new Barrel($('.img-preview'))
   </script>
 </body>
 </html>
