@@ -71,7 +71,7 @@
           lastImgInfo = imgInfo
 
         rowList.push(imgInfo)
-        console.log(rowList.length)
+
         for(var i = 0; i < rowList.length; i++) {
           rowWidth += imgInfo.width
           if (rowWidth > clientWidth) {
@@ -86,27 +86,27 @@
         }
       },*/
       render: function(imgInfo){
-        var _this = this;
-        var rowList = this.rowList,
+        var clientWidth = this.$ct.width(),
+          _this = this,
           rowWidth = 0,
           rowHeight = 0,
-          clientWidth = this.$ct.width(),
-          lastImgInfo = imgInfo;
+          rowList = this.rowList,
+          lastImgInfo = imgInfo
 
         rowList.push(imgInfo);
 
         $.each(rowList,function(idx, imgInfo){
-          rowWidth += imgInfo.width;
+          rowWidth += imgInfo.width
           if(rowWidth  > clientWidth ){
-            rowList.pop();
-            rowWidth -= lastImgInfo.width;
-            rowHeight = clientWidth * _this.baseHeight / rowWidth;
+            rowList.pop()
+            rowWidth -= lastImgInfo.width
+            rowHeight = clientWidth * _this.baseHeight / rowWidth
 
-            _this.layout(rowHeight);
-            _this.rowList = [];
-            _this.rowList.push(lastImgInfo);
+            _this.layout(rowHeight)
+            _this.rowList = []
+            _this.rowList.push(lastImgInfo)
           }
-        });
+        })
       },
 
       layout: function (rowHeight) {
